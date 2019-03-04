@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import * as namesJson from '../assets/names.json';
 
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
+@Injectable()
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,10 +11,11 @@ import * as namesJson from '../assets/names.json';
 })
 export class AppComponent {
   name = 'randomName';
-  constructor() {
-    const length = namesJson["default"].length;
-    const names:string[] = namesJson["default"];
-    let index = Math.floor(Math.random() * (length+1));
-    this.name = names[index % length];
+  constructor(private http: HttpClient) {
+    this.http.get('assets/names.json').subscribe((data:string[]) => {
+      const length = data.length;
+      const index = Math.floor(Math.random() * (length+1));
+      this.name = data[index % length];
+     });
   }
 }
